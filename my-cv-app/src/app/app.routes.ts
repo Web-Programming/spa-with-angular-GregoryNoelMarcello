@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CvComponent } from './cv/cv.component';      // Impor Komponen CV
 import { ContactComponent } from './contact/contact.component'; // Impor Komponen Kontak
 
-const routes: Routes = [
+export const routes: Routes = [
   // Definisikan path untuk Halaman CV
   { path: 'cv', component: CvComponent },
   // Definisikan path untuk Halaman Kontak

@@ -1,0 +1,18 @@
+<div class="d-flex align-items-center gap-3 mb-3">
+  <img [src]="user?.avatar || 'https://ui-avatars.com/api/?name='+(user?.name || 'U')" alt="avatar" class="rounded-circle" width="80" height="80">
+  <div>
+    <h4 class="mb-0">{{ user?.name }}</h4>
+    <div class="text-muted small">{{ user?.email }}</div>
+    <div class="text-muted small">{{ user?.phone }} • {{ user?.location }}</div>
+  </div>
+  <div class="ms-auto text-end">
+    <div>
+      <button class="btn btn-sm btn-outline-secondary me-2" (click)="onSettings()">Settings</button>
+      <button class="btn btn-sm btn-primary" (click)="onEdit()">Edit Profile</button>
+    </div>
+    <div class="mt-1">
+      <span *ngIf="user?.isPremium" class="badge bg-warning text-dark me-1">Premium</span>
+      <span *ngIf="user?.isVerified" class="badge bg-success">Verified</span>
+    </div>
+  </div>
+</div>

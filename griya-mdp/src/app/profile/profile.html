@@ -1,1 +1,34 @@
-<p>profile works!</p>
+<section class="profile-section py-4">
+	<div class="container">
+		<app-profile-header [user]="user" (edit)="onEditProfile()" (settings)="onSettings()"></app-profile-header>
+
+		<div class="row g-4">
+			<div class="col-lg-4">
+				<app-stats-card [stats]="stats"></app-stats-card>
+				<app-about-card [user]="user"></app-about-card>
+				<app-social-card [links]="socialLinks"></app-social-card>
+			</div>
+
+			<div class="col-lg-8">
+				<h5>Properti Saya</h5>
+				<div class="row g-4 mb-4">
+					<div class="col-md-6" *ngFor="let property of properties">
+						<app-property-item [item]="property" (edit)="onEditProperty($event)" (remove)="onDeleteProperty($event)"></app-property-item>
+					</div>
+				</div>
+
+				<h5>Favorit</h5>
+				<div class="row g-4 mb-4">
+					<div class="col-md-6" *ngFor="let fav of favorites">
+						<app-favorite-item [item]="fav"></app-favorite-item>
+					</div>
+				</div>
+
+				<h5>Riwayat</h5>
+				<div class="timeline">
+					<app-history-item *ngFor="let h of history" [item]="h"></app-history-item>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

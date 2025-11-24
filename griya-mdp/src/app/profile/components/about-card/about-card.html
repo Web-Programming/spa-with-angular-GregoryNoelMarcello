@@ -1,0 +1,11 @@
+<div class="card shadow-sm border-0 mb-3">
+  <div class="card-header bg-white border-0 py-2">About</div>
+  <div class="card-body">
+    <p class="mb-1">{{ user?.bio || 'No bio available.' }}</p>
+    <ul class="list-unstyled small text-muted mb-0">
+      <li *ngIf="user?.job"><strong>Job:</strong> {{ user.job }}</li>
+      <li *ngIf="user?.birthdate"><strong>Birthdate:</strong> {{ user.birthdate }}</li>
+      <li *ngIf="user?.status"><strong>Status:</strong> {{ user.status }}</li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+<div class="card shadow-sm border-0">
+  <div class="card-header bg-white border-0 py-2">Social</div>
+  <div class="card-body d-grid gap-2">
+    <a *ngIf="links.facebook" [href]="links.facebook" target="_blank" class="btn btn-outline-primary btn-sm">Facebook</a>
+    <a *ngIf="links.twitter" [href]="links.twitter" target="_blank" class="btn btn-outline-info btn-sm">Twitter</a>
+    <a *ngIf="links.instagram" [href]="links.instagram" target="_blank" class="btn btn-outline-danger btn-sm">Instagram</a>
+    <a *ngIf="links.linkedin" [href]="links.linkedin" target="_blank" class="btn btn-outline-secondary btn-sm">LinkedIn</a>
+  </div>
+</div>

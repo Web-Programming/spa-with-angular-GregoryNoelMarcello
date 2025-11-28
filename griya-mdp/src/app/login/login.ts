@@ -1,95 +1,66 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { Router, RouterLink } from '@angular/router';
-
+import { Component } from '@angular/core';
+import { FormGroup, ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
+import { RouterLink,Router } from '@angular/router';
+import { AuthService } from '../services/auth';
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
   loginForm: FormGroup;
-  // UI state
-  showPassword: boolean = false;
-  isLoading: boolean = false;
-  errorMessage: string = '';
-  // Remember me (template-driven)
-  rememberMe: boolean = false;
-  // Forgot password
-  showForgotPasswordModal: boolean = false;
-  forgotPasswordEmail: string = '';
+  showPassword= false;
+  isLoading= false;
+  successMessage= '';
+  errorMessage= '';
+constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  this.loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]]
+  });
+}
+submitLogin(): void {
+if (this.loginForm.valid) {
+      this.isLoading = true;
+      this.errorMessage = '';
+      this.successMessage = '';
+      
+      const formData = this.loginForm.value;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
-  }
-
-  submitLogin(): void {
-    if (!this.loginForm.valid) {
-      this.loginForm.markAllAsTouched();
-      console.log('Form is not valid');
-      return;
-    }
-
-    const credentials = this.loginForm.value;
-    const payload = { email: credentials.email, password: credentials.password };
-
-    this.isLoading = true;
-    this.errorMessage = '';
-
-    this.http.post('http://localhost:3000/api/login', payload)
-      .subscribe({
-        next: (response: any) => {
-          this.isLoading = false;
-          const token = response?.token;
-          const user = response?.user ?? null;
-
-          if (token) {
-            if (credentials.remember) {
-              localStorage.setItem('token', token);
-              if (user) localStorage.setItem('user', JSON.stringify(user));
-            } else {
-              sessionStorage.setItem('token', token);
-              if (user) sessionStorage.setItem('user', JSON.stringify(user));
+      // Kirim data ke backend API melalui AuthService
+      this.authService.login(formData)
+        .subscribe({
+          next: (response) => {
+            console.log('Login successful', response);
+            this.isLoading = false;
+            this.successMessage = response.message || 'Login berhasil!';
+            
+            // Simpan user data ke localStorage
+            if (response.data) {
+              this.authService.saveUserData(response.data);
             }
-
-            // Redirect to home/dashboard
-            this.router.navigate(['/home']);
-          } else {
-            this.errorMessage = 'Login gagal: token tidak diterima';
+            
+            // Redirect ke home page setelah 1 detik
+            setTimeout(() => {
+              this.router.navigate(['/']);
+            }, 1000);
+          },
+          error: (error) => {
+            console.error('Login failed', error);
+            this.isLoading = false;
+            this.errorMessage = error.error?.message || 'Email atau password salah';
+            
+            // Auto hide error message after 5 seconds
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
           }
-        },
-        error: (error) => {
-          this.isLoading = false;
-          console.error('Login failed', error);
-          if (error?.status === 401) {
-            this.errorMessage = 'Email atau password salah';
-          } else if (error?.status === 403) {
-            this.errorMessage = 'Akun Anda telah diblokir';
-          } else {
-            this.errorMessage = 'Terjadi kesalahan. Silakan coba lagi';
-          }
-        }
-      });
-  }
-
-  openForgotPassword(): void {
-    this.showForgotPasswordModal = true;
-  }
-
-  sendResetPasswordEmail(): void {
-    this.http.post('/api/forgot-password', { email: this.forgotPasswordEmail })
-      .subscribe({
-        next: () => {
-          alert('Email reset password telah dikirim');
-          this.showForgotPasswordModal = false;
-          this.forgotPasswordEmail = '';
-        }
-      });
+        });
+    } else {
+      console.log('Form is not valid');
+      this.errorMessage = 'Mohon lengkapi semua field dengan benar';
+    }
   }
 }

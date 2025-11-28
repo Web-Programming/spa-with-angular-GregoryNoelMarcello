@@ -104,6 +104,39 @@
     Gunakan kombinasi huruf, angka, dan simbol untuk keamanan maksimal
   </div>
 </div>
+<!-- Confirm Password -->
+<div class="mb-4">
+  <label for="confirmPassword" class="form-label fw-semibold">
+    <i class="bi bi-lock-fill me-2"></i>Konfirmasi Password
+  </label>
+  <div class="input-group">
+    <input
+      [type]="showPassword ? 'text' : 'password'"
+      id="confirmPassword"
+      class="form-control form-control-lg"
+      formControlName="confirmPassword"
+      [class.is-invalid]="(registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) || (registerForm.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched)"
+      placeholder="Ketik ulang password Anda"
+      required>
+    <button
+      class="btn btn-outline-secondary"
+      type="button"
+      (click)="showPassword = !showPassword">
+      <i [ngClass]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+    </button>
+  </div>
+  <div class="invalid-feedback" *ngIf="(registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) || (registerForm.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched)">
+    <div *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">
+      Konfirmasi password harus diisi
+    </div>
+    <div *ngIf="registerForm.errors?.['mismatch']">
+      Password tidak cocok
+    </div>
+  </div>
+  <div class="form-text" *ngIf="!registerForm.get('confirmPassword')?.touched || registerForm.get('confirmPassword')?.valid">
+    Pastikan kedua password sesuai
+  </div>
+</div>
 <div class="mb-4">
   <div class="form-check">
     <input class="form-check-input" type="checkbox" id="terms">
